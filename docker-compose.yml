@@ -1,0 +1,37 @@
+version: '3'
+services:
+  web:
+      container_name: fundacion
+      image: hitalos/laravel:latest
+      ports:
+          - 80:80
+      volumes:
+          - ./:/var/www
+      # environment:
+      #   - "DB_HOST=mysql"
+      #   - "DB_DATABASE=homestead"
+      #   - "DB_USERNAME=root"
+      #   - "DB_PASSWORD=secret"
+      networks:
+        - app-network
+  db:
+      container_name: mysql
+      image: mysql:latest
+      command: --default-authentication-plugin=mysql_native_password
+      volumes:
+        - "./.mysql-data/db:/var/lib/mysql"
+      restart: always
+      ports:
+        - 3306:3306
+      environment:
+        MYSQL_DATABASE: homestead
+        # MYSQL_USER: homestead
+        # MYSQL_ALLOW_EMPTY_PASSWORD: 
+        # MYSQL_PASSWORD: secret
+        MYSQL_ROOT_PASSWORD: secret
+      networks:
+        - app-network
+#Docker Networks
+networks:
+  app-network:
+    driver: bridge
