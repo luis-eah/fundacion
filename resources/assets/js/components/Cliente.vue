@@ -95,9 +95,11 @@
                                     <label class="col-md-3 form-control-label" for="text-input">Tipo Documento</label>
                                     <div class="col-md-9">
                                         <select v-model="tipo_documento" class="form-control">
-                                            <option value="DNI">DNI</option>
-                                            <option value="RUC">RUC</option>
-                                            <option value="PASS">PASS</option>
+                                            <option value="C.C.">Cédula de Ciudadania</option>
+                                            <option value="T.I.">Tarjeta de Identidad</option>
+                                            <option value="C.E.">Cédula De Extranjería </option>
+                                            <option value="PSS">Pasaporte </option>
+                                            <option value="NIT">NIT </option>
                                         </select>                                    
                                     </div>
                                 </div>
@@ -155,7 +157,7 @@
             return {
                 persona_id: 0,
                 nombre : '',
-                tipo_documento : 'DNI',
+                tipo_documento : 'C.C.',
                 num_documento : '',
                 direccion : '',
                 telefono : '',

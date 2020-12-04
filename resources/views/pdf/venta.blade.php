@@ -115,11 +115,11 @@
         @foreach ($venta as $v)
         <header>
             <div id="logo">
-                <img src="img/logo2.png" alt="CompartiendoCodigo" id="imagen">
+                <img src="img/logoFundacion.jpeg" alt="logo" id="imagen" width="200">
             </div>
             <div id="datos">
                 <p id="encabezado">
-                    <b>Compartiendo Códigos</b><br>Arequipa, Perú<br>Telefono:(+51)999999999<br>Email: compartiendocodigos@gmail.com
+                    <b>Fundación Fum Futuro</b><br>Santiago de Cali, Colombia<br>Telefono:(+51)999999999<br>Email: correo@gmail.com
                 </p>
             </div>
             <div id="fact">
