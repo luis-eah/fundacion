@@ -5,8 +5,8 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="Sistema Ventas Laravel Vue Js- Compartiendocodigos">
-    <meta name="author" content="compartiendocodigos.net">
+    <meta name="description" content="Sistema Ventas Fum Futuro">
+    <meta name="author" content="usc.edu.co">
     <meta name="keyword" content="Sistema ventas">
     <link rel="shortcut icon" href="img/favicon.ico">
     <meta name="userId" content="{{ Auth::check() ? Auth::user()->id : ''}}">
