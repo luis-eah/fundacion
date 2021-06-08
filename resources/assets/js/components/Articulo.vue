@@ -44,7 +44,7 @@
                             </thead>
                             <tbody>
                                 <tr v-for="articulo in arrayArticulo" :key="articulo.id">
-                                    <td>
+                                    <td width="10%" >
                                         <button type="button" @click="abrirModal('articulo','actualizar',articulo)" class="btn btn-warning btn-sm">
                                           <i class="icon-pencil"></i>
                                         </button> &nbsp;
@@ -56,6 +56,11 @@
                                         <template v-else>
                                             <button type="button" class="btn btn-info btn-sm" @click="activarArticulo(articulo.id)">
                                                 <i class="icon-check"></i>
+                                            </button>
+                                        </template>
+                                        <template v-if="articulo.ruta">
+                                            <button type="button" class="btn btn-success btn-sm" @click="goto_route(articulo.id)">
+                                                <i class="icon-folder"></i>
                                             </button>
                                         </template>
                                     </td>
@@ -148,6 +153,10 @@
                                         <input type="email" v-model="descripcion" class="form-control" placeholder="Ingrese descripción">
                                     </div>
                                 </div>
+                                <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="file-input">Archivo</label>
+                                    <input type="file" id="file" ref="file" class="form-control" v-on:change="handleFileUpload()"/>
+                                </div>
                                 <div v-show="errorArticulo" class="form-group row div-error">
                                     <div class="text-center text-error">
                                         <div v-for="error in errorMostrarMsjArticulo" :key="error" v-text="error">
@@ -185,6 +194,8 @@
                 precio_venta : 0,
                 stock : 0,
                 descripcion : '',
+                ruta : '',
+                file : null,
                 arrayArticulo : [],
                 modal : 0,
                 tituloModal : '',
@@ -279,14 +290,25 @@
                 
                 let me = this;
 
-                axios.post('/articulo/registrar',{
-                    'idcategoria': this.idcategoria,
-                    'codigo': this.codigo,
-                    'nombre': this.nombre,
-                    'stock': this.stock,
-                    'precio_venta': this.precio_venta,
-                    'descripcion': this.descripcion
-                }).then(function (response) {
+                let formData = new FormData();
+                /*
+                    Add the form data we need to submit
+                */
+                formData.append('idcategoria', this.idcategoria);
+                formData.append('codigo', this.codigo);
+                formData.append('nombre', this.nombre);
+                formData.append('stock', this.stock);
+                formData.append('precio_venta', this.precio_venta);
+                formData.append('descripcion', this.descripcion);
+                formData.append('file', this.file);
+
+                axios.post('/articulo/registrar',formData,
+                {
+                    headers: {
+                        'Content-Type': 'multipart/form-data'
+                    }
+                }
+                ).then(function (response) {
                     me.cerrarModal();
                     me.listarArticulo(1,'','nombre');
                 }).catch(function (error) {
@@ -300,15 +322,26 @@
                 
                 let me = this;
 
-                axios.put('/articulo/actualizar',{
-                    'idcategoria': this.idcategoria,
-                    'codigo': this.codigo,
-                    'nombre': this.nombre,
-                    'stock': this.stock,
-                    'precio_venta': this.precio_venta,
-                    'descripcion': this.descripcion,
-                    'id': this.articulo_id
-                }).then(function (response) {
+                let formData = new FormData();
+                /*
+                    Add the form data we need to submit
+                */
+                formData.append('idcategoria', this.idcategoria);
+                formData.append('codigo', this.codigo);
+                formData.append('nombre', this.nombre);
+                formData.append('stock', this.stock);
+                formData.append('precio_venta', this.precio_venta);
+                formData.append('descripcion', this.descripcion);
+                formData.append('file', this.file);
+                formData.append('id', this.articulo_id);
+
+                axios.post('/articulo/actualizar',formData,
+                {
+                    headers: {
+                        'Content-Type': 'multipart/form-data'
+                    }
+                }
+                ).then(function (response) {
                     me.cerrarModal();
                     me.listarArticulo(1,'','nombre');
                 }).catch(function (error) {
@@ -412,13 +445,21 @@
                 this.idcategoria= 0;
                 this.nombre_categoria = '';
                 this.codigo = '';
+                this.ruta = '';
                 this.nombre = '';
                 this.precio_venta = 0;
                 this.stock = 0;
                 this.descripcion = '';
 		        this.errorArticulo=0;
             },
+            handleFileUpload(){
+                this.file = this.$refs.file.files[0];
+            },
+            goto_route: function (id) {
+                window.open(route('articulo.archivo',{articulo:id}),'_blank' )
+            },
             abrirModal(modelo, accion, data = []){
+                console.log(data)
                 switch(modelo){
                     case "articulo":
                     {
@@ -431,6 +472,7 @@
                                 this.nombre_categoria='';
                                 this.codigo='';
                                 this.nombre= '';
+                                this.ruta= '';
                                 this.precio_venta=0;
                                 this.stock=0;
                                 this.descripcion = '';
@@ -450,6 +492,7 @@
                                 this.stock=data['stock'];
                                 this.precio_venta=data['precio_venta'];
                                 this.descripcion= data['descripcion'];
+                                this.ruta= data['ruta'];
                                 break;
                             }
                         }

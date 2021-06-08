@@ -127,6 +127,10 @@
                                         <input type="email" v-model="email" class="form-control" placeholder="Email">
                                     </div>
                                 </div>
+                                <div class="form-group row">
+                                    <label class="col-md-3 form-control-label" for="file-input">Archivo</label>
+                                    <input type="file" id="file" ref="file" class="form-control" v-on:change="handleFileUpload()"/>
+                                </div>
                                 <div v-show="errorPersona" class="form-group row div-error">
                                     <div class="text-center text-error">
                                         <div v-for="error in errorMostrarMsjPersona" :key="error" v-text="error">
@@ -162,6 +166,7 @@
                 direccion : '',
                 telefono : '',
                 email : '',
+                file : null,
                 arrayPersona : [],
                 modal : 0,
                 tituloModal : '',
@@ -237,14 +242,25 @@
                 
                 let me = this;
 
-                axios.post('/cliente/registrar',{
-                    'nombre': this.nombre,
-                    'tipo_documento': this.tipo_documento,
-                    'num_documento' : this.num_documento,
-                    'direccion' : this.direccion,
-                    'telefono' : this.telefono,
-                    'email' : this.email
-                }).then(function (response) {
+                let formData = new FormData();
+                /*
+                    Add the form data we need to submit
+                */
+                formData.append('nombre', this.nombre);
+                formData.append('tipo_documento', this.tipo_documento);
+                formData.append('num_documento', this.num_documento);
+                formData.append('direccion', this.direccion);
+                formData.append('telefono', this.telefono);
+                formData.append('email', this.email);
+                formData.append('file', this.file);
+
+                axios.post('/cliente/registrar',formData,
+                {
+                    headers: {
+                        'Content-Type': 'multipart/form-data'
+                    }
+                }
+                ).then(function (response) {
                     me.cerrarModal();
                     me.listarPersona(1,'','nombre');
                 }).catch(function (error) {
@@ -287,13 +303,16 @@
                 this.modal=0;
                 this.tituloModal='';
                 this.nombre='';
-                this.tipo_documento='DNI';
+                this.tipo_documento='CC';
                 this.num_documento='';
                 this.direccion='';
                 this.telefono='';
                 this.email='';
                 this.errorPersona=0;
 
+            },
+            handleFileUpload(){
+                this.file = this.$refs.file.files[0];
             },
             abrirModal(modelo, accion, data = []){
                 switch(modelo){
@@ -305,7 +324,7 @@
                                 this.modal = 1;
                                 this.tituloModal = 'Registrar Cliente';
                                 this.nombre= '';
-                                this.tipo_documento='DNI';
+                                this.tipo_documento='CC';
                                 this.num_documento='';
                                 this.direccion='';
                                 this.telefono='';

@@ -102,7 +102,7 @@
                 <tr>
                     <td>{{$a->codigo}}</td>
                     <td>{{$a->nombre}}</td>
-                    <td>{{$a->categoria}}</td>
+                    <td>{{$a->nombre_categoria}}</td>
                     <td>{{$a->precio_venta}}</td>
                     <td>{{$a->stock}}</td>
                     <td>{{$a->descripcion}}</td>

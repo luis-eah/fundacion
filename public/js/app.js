@@ -58090,6 +58090,15 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -58103,6 +58112,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             precio_venta: 0,
             stock: 0,
             descripcion: '',
+            ruta: '',
+            file: null,
             arrayArticulo: [],
             modal: 0,
             tituloModal: '',
@@ -58195,13 +58206,22 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
             var me = this;
 
-            axios.post('/articulo/registrar', {
-                'idcategoria': this.idcategoria,
-                'codigo': this.codigo,
-                'nombre': this.nombre,
-                'stock': this.stock,
-                'precio_venta': this.precio_venta,
-                'descripcion': this.descripcion
+            var formData = new FormData();
+            /*
+                Add the form data we need to submit
+            */
+            formData.append('idcategoria', this.idcategoria);
+            formData.append('codigo', this.codigo);
+            formData.append('nombre', this.nombre);
+            formData.append('stock', this.stock);
+            formData.append('precio_venta', this.precio_venta);
+            formData.append('descripcion', this.descripcion);
+            formData.append('file', this.file);
+
+            axios.post('/articulo/registrar', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
             }).then(function (response) {
                 me.cerrarModal();
                 me.listarArticulo(1, '', 'nombre');
@@ -58216,14 +58236,23 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
             var me = this;
 
-            axios.put('/articulo/actualizar', {
-                'idcategoria': this.idcategoria,
-                'codigo': this.codigo,
-                'nombre': this.nombre,
-                'stock': this.stock,
-                'precio_venta': this.precio_venta,
-                'descripcion': this.descripcion,
-                'id': this.articulo_id
+            var formData = new FormData();
+            /*
+                Add the form data we need to submit
+            */
+            formData.append('idcategoria', this.idcategoria);
+            formData.append('codigo', this.codigo);
+            formData.append('nombre', this.nombre);
+            formData.append('stock', this.stock);
+            formData.append('precio_venta', this.precio_venta);
+            formData.append('descripcion', this.descripcion);
+            formData.append('file', this.file);
+            formData.append('id', this.articulo_id);
+
+            axios.post('/articulo/actualizar', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
             }).then(function (response) {
                 me.cerrarModal();
                 me.listarArticulo(1, '', 'nombre');
@@ -58314,15 +58343,24 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             this.idcategoria = 0;
             this.nombre_categoria = '';
             this.codigo = '';
+            this.ruta = '';
             this.nombre = '';
             this.precio_venta = 0;
             this.stock = 0;
             this.descripcion = '';
             this.errorArticulo = 0;
         },
+        handleFileUpload: function handleFileUpload() {
+            this.file = this.$refs.file.files[0];
+        },
+
+        goto_route: function goto_route(id) {
+            window.open(route('articulo.archivo', { articulo: id }), '_blank');
+        },
         abrirModal: function abrirModal(modelo, accion) {
             var data = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : [];
 
+            console.log(data);
             switch (modelo) {
                 case "articulo":
                     {
@@ -58335,6 +58373,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                                     this.nombre_categoria = '';
                                     this.codigo = '';
                                     this.nombre = '';
+                                    this.ruta = '';
                                     this.precio_venta = 0;
                                     this.stock = 0;
                                     this.descripcion = '';
@@ -58354,6 +58393,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                                     this.stock = data['stock'];
                                     this.precio_venta = data['precio_venta'];
                                     this.descripcion = data['descripcion'];
+                                    this.ruta = data['ruta'];
                                     break;
                                 }
                         }
@@ -61161,6 +61201,7 @@ var render = function() {
                   return _c("tr", { key: articulo.id }, [
                     _c(
                       "td",
+                      { attrs: { width: "10%" } },
                       [
                         _c(
                           "button",
@@ -61210,7 +61251,25 @@ var render = function() {
                                 },
                                 [_c("i", { staticClass: "icon-check" })]
                               )
+                            ],
+                        _vm._v(" "),
+                        articulo.ruta
+                          ? [
+                              _c(
+                                "button",
+                                {
+                                  staticClass: "btn btn-success btn-sm",
+                                  attrs: { type: "button" },
+                                  on: {
+                                    click: function($event) {
+                                      return _vm.goto_route(articulo.id)
+                                    }
+                                  }
+                                },
+                                [_c("i", { staticClass: "icon-folder" })]
+                              )
                             ]
+                          : _vm._e()
                       ],
                       2
                     ),
@@ -61669,6 +61728,28 @@ var render = function() {
                           }
                         })
                       ])
+                    ]),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "form-group row" }, [
+                      _c(
+                        "label",
+                        {
+                          staticClass: "col-md-3 form-control-label",
+                          attrs: { for: "file-input" }
+                        },
+                        [_vm._v("Archivo")]
+                      ),
+                      _vm._v(" "),
+                      _c("input", {
+                        ref: "file",
+                        staticClass: "form-control",
+                        attrs: { type: "file", id: "file" },
+                        on: {
+                          change: function($event) {
+                            return _vm.handleFileUpload()
+                          }
+                        }
+                      })
                     ]),
                     _vm._v(" "),
                     _c(
@@ -64566,6 +64647,10 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     data: function data() {
@@ -64577,6 +64662,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             direccion: '',
             telefono: '',
             email: '',
+            file: null,
             arrayPersona: [],
             modal: 0,
             tituloModal: '',
@@ -64651,13 +64737,22 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
             var me = this;
 
-            axios.post('/cliente/registrar', {
-                'nombre': this.nombre,
-                'tipo_documento': this.tipo_documento,
-                'num_documento': this.num_documento,
-                'direccion': this.direccion,
-                'telefono': this.telefono,
-                'email': this.email
+            var formData = new FormData();
+            /*
+                Add the form data we need to submit
+            */
+            formData.append('nombre', this.nombre);
+            formData.append('tipo_documento', this.tipo_documento);
+            formData.append('num_documento', this.num_documento);
+            formData.append('direccion', this.direccion);
+            formData.append('telefono', this.telefono);
+            formData.append('email', this.email);
+            formData.append('file', this.file);
+
+            axios.post('/cliente/registrar', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
             }).then(function (response) {
                 me.cerrarModal();
                 me.listarPersona(1, '', 'nombre');
@@ -64701,12 +64796,15 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             this.modal = 0;
             this.tituloModal = '';
             this.nombre = '';
-            this.tipo_documento = 'DNI';
+            this.tipo_documento = 'CC';
             this.num_documento = '';
             this.direccion = '';
             this.telefono = '';
             this.email = '';
             this.errorPersona = 0;
+        },
+        handleFileUpload: function handleFileUpload() {
+            this.file = this.$refs.file.files[0];
         },
         abrirModal: function abrirModal(modelo, accion) {
             var data = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : [];
@@ -64720,7 +64818,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                                     this.modal = 1;
                                     this.tituloModal = 'Registrar Cliente';
                                     this.nombre = '';
-                                    this.tipo_documento = 'DNI';
+                                    this.tipo_documento = 'CC';
                                     this.num_documento = '';
                                     this.direccion = '';
                                     this.telefono = '';
@@ -65334,6 +65432,28 @@ var render = function() {
                           }
                         })
                       ])
+                    ]),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "form-group row" }, [
+                      _c(
+                        "label",
+                        {
+                          staticClass: "col-md-3 form-control-label",
+                          attrs: { for: "file-input" }
+                        },
+                        [_vm._v("Archivo")]
+                      ),
+                      _vm._v(" "),
+                      _c("input", {
+                        ref: "file",
+                        staticClass: "form-control",
+                        attrs: { type: "file", id: "file" },
+                        on: {
+                          change: function($event) {
+                            return _vm.handleFileUpload()
+                          }
+                        }
+                      })
                     ]),
                     _vm._v(" "),
                     _c(

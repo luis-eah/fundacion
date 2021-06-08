@@ -77,6 +77,9 @@
         <!-- /Fin del contenido principal -->
     </div>   
     </div>
+    @routes
+
+
     <footer class="app-footer">
         <span><a href="{{route('main')}}">FumFuturo</a> &copy; 2020</span>
         <span class="ml-auto">Version 0.0.1</span>

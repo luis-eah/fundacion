@@ -11,6 +11,11 @@
 |
 */
 
+use App\Articulo;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
+
+
 Route::group(['middleware'=>['guest']],function(){
     Route::get('/','Auth\LoginController@showLoginForm');
     Route::post('/', 'Auth\LoginController@login')->name('login');
@@ -37,7 +42,8 @@ Route::group(['middleware'=>['auth']],function(){
 
         Route::get('/articulo', 'ArticuloController@index');
         Route::post('/articulo/registrar', 'ArticuloController@store');
-        Route::put('/articulo/actualizar', 'ArticuloController@update');
+        Route::match(['put','post'],'/articulo/actualizar', 'ArticuloController@update');
+
         Route::put('/articulo/desactivar', 'ArticuloController@desactivar');
         Route::put('/articulo/activar', 'ArticuloController@activar');
         Route::get('/articulo/buscarArticulo', 'ArticuloController@buscarArticulo');
@@ -93,6 +99,9 @@ Route::group(['middleware'=>['auth']],function(){
         Route::get('/articulo/listarArticuloVenta', 'ArticuloController@listarArticuloVenta');
         Route::get('/articulo/buscarArticuloVenta', 'ArticuloController@buscarArticuloVenta');
         Route::get('/articulo/listarPdf', 'ArticuloController@listarPdf')->name('articulos_pdf');
+        Route::get('/articulo/{articulo}/archivo', function (Articulo $articulo) {
+            return Storage::disk('s3')->response($articulo->ruta, $articulo->nombre);
+        })->name('articulo.archivo');
 
         Route::get('/proveedor', 'ProveedorController@index');
         Route::post('/proveedor/registrar', 'ProveedorController@store');
@@ -128,5 +137,3 @@ Route::group(['middleware'=>['auth']],function(){
     });
 
 });
-
-//Route::get('/home', 'HomeController@index')->name('home');
