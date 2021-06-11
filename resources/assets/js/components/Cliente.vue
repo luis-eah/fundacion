@@ -46,6 +46,11 @@
                                         <button type="button" @click="abrirModal('persona','actualizar',persona)" class="btn btn-warning btn-sm">
                                           <i class="icon-pencil"></i>
                                         </button>
+                                          <template v-if="persona.ruta">
+                                            <button type="button" class="btn btn-success btn-sm" @click="goto_route(persona.id)">
+                                                <i class="icon-folder"></i>
+                                            </button>
+                                        </template>
                                     </td>
                                     <td v-text="persona.nombre"></td>
                                     <td v-text="persona.tipo_documento"></td>
@@ -84,7 +89,7 @@
                             </button>
                         </div>
                         <div class="modal-body">
-                            <form action="" method="post" enctype="multipart/form-data" class="form-horizontal">
+                            <form id="formCliente" action="" method="post" enctype="multipart/form-data" class="form-horizontal">
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Nombre (*)</label>
                                     <div class="col-md-9">
@@ -165,6 +170,7 @@
                 num_documento : '',
                 direccion : '',
                 telefono : '',
+                ruta : '',
                 email : '',
                 file : null,
                 arrayPersona : [],
@@ -235,6 +241,9 @@
                 //Envia la petición para visualizar la data de esa página
                 me.listarPersona(page,buscar,criterio);
             },
+            goto_route: function (id) {
+                window.open(route('cliente.archivo',{cliente:id}),'_blank' )
+            },
             registrarPersona(){
                 if (this.validarPersona()){
                     return;
@@ -261,6 +270,7 @@
                     }
                 }
                 ).then(function (response) {
+                    document.getElementById("formCliente").reset();
                     me.cerrarModal();
                     me.listarPersona(1,'','nombre');
                 }).catch(function (error) {
@@ -274,15 +284,37 @@
                 
                 let me = this;
 
-                axios.put('/cliente/actualizar',{
-                    'nombre': this.nombre,
-                    'tipo_documento': this.tipo_documento,
-                    'num_documento' : this.num_documento,
-                    'direccion' : this.direccion,
-                    'telefono' : this.telefono,
-                    'email' : this.email,
-                    'id': this.persona_id
-                }).then(function (response) {
+                // axios.post('/cliente/actualizar',{
+                //     'nombre': this.nombre,
+                //     'tipo_documento': this.tipo_documento,
+                //     'num_documento' : this.num_documento,
+                //     'direccion' : this.direccion,
+                //     'telefono' : this.telefono,
+                //     'email' : this.email,
+                //     'id': this.persona_id
+                // })
+
+                let formData = new FormData();
+                /*
+                    Add the form data we need to submit
+                */
+                formData.append('nombre', this.nombre);
+                formData.append('tipo_documento', this.tipo_documento);
+                formData.append('num_documento', this.num_documento);
+                formData.append('direccion', this.direccion);
+                formData.append('telefono', this.telefono);
+                formData.append('email', this.email);
+                formData.append('file', this.file);
+                formData.append('id', this.persona_id);
+
+                axios.post('/cliente/actualizar',formData,
+                {
+                    headers: {
+                        'Content-Type': 'multipart/form-data'
+                    }
+                })
+                .then(function (response) {
+                    document.getElementById("formCliente").reset();
                     me.cerrarModal();
                     me.listarPersona(1,'','nombre');
                 }).catch(function (error) {

@@ -12,6 +12,7 @@
 */
 
 use App\Articulo;
+use App\Persona;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -66,7 +67,7 @@ Route::group(['middleware'=>['auth']],function(){
     Route::group(['middleware' => ['Vendedor']], function () {
         Route::get('/cliente', 'ClienteController@index');
         Route::post('/cliente/registrar', 'ClienteController@store');
-        Route::put('/cliente/actualizar', 'ClienteController@update');
+        Route::match(['put','post'],'/cliente/actualizar', 'ClienteController@update');
         Route::get('/cliente/selectCliente', 'ClienteController@selectCliente');
 
         Route::get('/articulo/buscarArticuloVenta', 'ArticuloController@buscarArticuloVenta');
@@ -100,7 +101,12 @@ Route::group(['middleware'=>['auth']],function(){
         Route::get('/articulo/buscarArticuloVenta', 'ArticuloController@buscarArticuloVenta');
         Route::get('/articulo/listarPdf', 'ArticuloController@listarPdf')->name('articulos_pdf');
         Route::get('/articulo/{articulo}/archivo', function (Articulo $articulo) {
-            return Storage::disk('s3')->response($articulo->ruta, $articulo->nombre);
+            $ruta = $articulo->ruta;
+            $disk = "s3";
+            $exist =  Storage::disk($disk)->exists($ruta);
+            if ($exist) {
+                return Storage::disk($disk)->response($ruta, $articulo->nombre);
+            }
         })->name('articulo.archivo');
 
         Route::get('/proveedor', 'ProveedorController@index');
@@ -112,6 +118,14 @@ Route::group(['middleware'=>['auth']],function(){
         Route::post('/cliente/registrar', 'ClienteController@store');
         Route::put('/cliente/actualizar', 'ClienteController@update');
         Route::get('/cliente/selectCliente', 'ClienteController@selectCliente');
+        Route::get('/cliente/{cliente}/archivo', function (Persona $cliente) {
+            $ruta = $cliente->ruta;
+            $disk = "s3";
+            $exist =  Storage::disk($disk)->exists($ruta);
+            if ($exist) {
+                return Storage::disk($disk)->response($ruta, $cliente->nombre);
+            }
+        })->name('cliente.archivo');
 
         Route::get('/venta', 'VentaController@index');
         Route::post('/venta/registrar', 'VentaController@store');

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Persona;
+use Illuminate\Support\Facades\Storage;
 
 class ClienteController extends Controller
 {
@@ -58,6 +59,14 @@ class ClienteController extends Controller
         $persona->telefono = $request->telefono;
         $persona->email = $request->email;
 
+        if ($request->has("file")) {
+            $ruta = Storage::disk('s3')->putFile(
+                'fundacion/persona',
+                $request->file('file')
+            );
+            $persona->ruta = $ruta;
+        }
+
         $persona->save();
     }
 
@@ -71,6 +80,15 @@ class ClienteController extends Controller
         $persona->direccion = $request->direccion;
         $persona->telefono = $request->telefono;
         $persona->email = $request->email;
+
+        if ($request->has("file")) {
+            $ruta = Storage::disk('s3')->putFile(
+                'fundacion/persona',
+                $request->file('file')
+            );
+            $persona->ruta = $ruta;
+        }
+        
         $persona->save();
     }
 }

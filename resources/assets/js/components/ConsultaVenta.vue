@@ -187,7 +187,7 @@
                 tipo_comprobante : 'BOLETA',
                 serie_comprobante : '',
                 num_comprobante : '',
-                impuesto: 0.18,
+                impuesto: 0.19,
                 total:0.0,
                 totalImpuesto: 0.0,
                 totalParcial: 0.0,
@@ -295,7 +295,7 @@
                     me.tipo_comprobante='BOLETA';
                     me.serie_comprobante='';
                     me.num_comprobante='';
-                    me.impuesto=0.18;
+                    me.impuesto=0.19;
                     me.total=0.0;
                     me.idarticulo=0;
                     me.articulo='';

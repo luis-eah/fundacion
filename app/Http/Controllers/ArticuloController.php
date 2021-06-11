@@ -142,7 +142,6 @@ class ArticuloController extends Controller
     }
     public function update(Request $request)
     {
-        dd($request->all(), $request->file("file"));
 
         if (!$request->ajax()) return redirect('/');
         $articulo = Articulo::findOrFail($request->id);
@@ -153,6 +152,15 @@ class ArticuloController extends Controller
         $articulo->stock = $request->stock;
         $articulo->descripcion = $request->descripcion;
         $articulo->condicion = '1';
+        if ($request->has("file")) {
+            $ruta = Storage::disk('s3')->putFile(
+                'fundacion/articulos',
+                $request->file('file')
+            );
+            $articulo->ruta = $ruta;
+        }
+
+
         $articulo->save();
     }
 

@@ -58223,6 +58223,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                     'Content-Type': 'multipart/form-data'
                 }
             }).then(function (response) {
+                document.getElementById("formArticulo").reset();
                 me.cerrarModal();
                 me.listarArticulo(1, '', 'nombre');
             }).catch(function (error) {
@@ -58254,6 +58255,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                     'Content-Type': 'multipart/form-data'
                 }
             }).then(function (response) {
+                document.getElementById("formArticulo").reset();
+
                 me.cerrarModal();
                 me.listarArticulo(1, '', 'nombre');
             }).catch(function (error) {
@@ -61201,7 +61204,7 @@ var render = function() {
                   return _c("tr", { key: articulo.id }, [
                     _c(
                       "td",
-                      { attrs: { width: "10%" } },
+                      { attrs: { width: "12%" } },
                       [
                         _c(
                           "button",
@@ -61459,6 +61462,7 @@ var render = function() {
                   {
                     staticClass: "form-horizontal",
                     attrs: {
+                      id: "formArticulo",
                       action: "",
                       method: "post",
                       enctype: "multipart/form-data"
@@ -64651,6 +64655,11 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     data: function data() {
@@ -64661,6 +64670,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             num_documento: '',
             direccion: '',
             telefono: '',
+            ruta: '',
             email: '',
             file: null,
             arrayPersona: [],
@@ -64730,6 +64740,10 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             //Envia la petición para visualizar la data de esa página
             me.listarPersona(page, buscar, criterio);
         },
+
+        goto_route: function goto_route(id) {
+            window.open(route('cliente.archivo', { cliente: id }), '_blank');
+        },
         registrarPersona: function registrarPersona() {
             if (this.validarPersona()) {
                 return;
@@ -64754,6 +64768,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                     'Content-Type': 'multipart/form-data'
                 }
             }).then(function (response) {
+                document.getElementById("formCliente").reset();
                 me.cerrarModal();
                 me.listarPersona(1, '', 'nombre');
             }).catch(function (error) {
@@ -64767,15 +64782,35 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
             var me = this;
 
-            axios.put('/cliente/actualizar', {
-                'nombre': this.nombre,
-                'tipo_documento': this.tipo_documento,
-                'num_documento': this.num_documento,
-                'direccion': this.direccion,
-                'telefono': this.telefono,
-                'email': this.email,
-                'id': this.persona_id
+            // axios.post('/cliente/actualizar',{
+            //     'nombre': this.nombre,
+            //     'tipo_documento': this.tipo_documento,
+            //     'num_documento' : this.num_documento,
+            //     'direccion' : this.direccion,
+            //     'telefono' : this.telefono,
+            //     'email' : this.email,
+            //     'id': this.persona_id
+            // })
+
+            var formData = new FormData();
+            /*
+                Add the form data we need to submit
+            */
+            formData.append('nombre', this.nombre);
+            formData.append('tipo_documento', this.tipo_documento);
+            formData.append('num_documento', this.num_documento);
+            formData.append('direccion', this.direccion);
+            formData.append('telefono', this.telefono);
+            formData.append('email', this.email);
+            formData.append('file', this.file);
+            formData.append('id', this.persona_id);
+
+            axios.post('/cliente/actualizar', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
             }).then(function (response) {
+                document.getElementById("formCliente").reset();
                 me.cerrarModal();
                 me.listarPersona(1, '', 'nombre');
             }).catch(function (error) {
@@ -64994,25 +65029,47 @@ var render = function() {
                 "tbody",
                 _vm._l(_vm.arrayPersona, function(persona) {
                   return _c("tr", { key: persona.id }, [
-                    _c("td", [
-                      _c(
-                        "button",
-                        {
-                          staticClass: "btn btn-warning btn-sm",
-                          attrs: { type: "button" },
-                          on: {
-                            click: function($event) {
-                              return _vm.abrirModal(
-                                "persona",
-                                "actualizar",
-                                persona
-                              )
+                    _c(
+                      "td",
+                      [
+                        _c(
+                          "button",
+                          {
+                            staticClass: "btn btn-warning btn-sm",
+                            attrs: { type: "button" },
+                            on: {
+                              click: function($event) {
+                                return _vm.abrirModal(
+                                  "persona",
+                                  "actualizar",
+                                  persona
+                                )
+                              }
                             }
-                          }
-                        },
-                        [_c("i", { staticClass: "icon-pencil" })]
-                      )
-                    ]),
+                          },
+                          [_c("i", { staticClass: "icon-pencil" })]
+                        ),
+                        _vm._v(" "),
+                        persona.ruta
+                          ? [
+                              _c(
+                                "button",
+                                {
+                                  staticClass: "btn btn-success btn-sm",
+                                  attrs: { type: "button" },
+                                  on: {
+                                    click: function($event) {
+                                      return _vm.goto_route(persona.id)
+                                    }
+                                  }
+                                },
+                                [_c("i", { staticClass: "icon-folder" })]
+                              )
+                            ]
+                          : _vm._e()
+                      ],
+                      2
+                    ),
                     _vm._v(" "),
                     _c("td", {
                       domProps: { textContent: _vm._s(persona.nombre) }
@@ -65183,6 +65240,7 @@ var render = function() {
                   {
                     staticClass: "form-horizontal",
                     attrs: {
+                      id: "formCliente",
                       action: "",
                       method: "post",
                       enctype: "multipart/form-data"
@@ -65853,7 +65911,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         return {
             persona_id: 0,
             nombre: '',
-            tipo_documento: 'DNI',
+            tipo_documento: 'NIT',
             num_documento: '',
             direccion: '',
             telefono: '',
@@ -66467,16 +66525,12 @@ var render = function() {
                             }
                           },
                           [
-                            _c("option", { attrs: { value: "DNI" } }, [
-                              _vm._v("DNI")
+                            _c("option", { attrs: { value: "NIT" } }, [
+                              _vm._v("NIT")
                             ]),
                             _vm._v(" "),
-                            _c("option", { attrs: { value: "RUC" } }, [
-                              _vm._v("RUC")
-                            ]),
-                            _vm._v(" "),
-                            _c("option", { attrs: { value: "PASS" } }, [
-                              _vm._v("PASS")
+                            _c("option", { attrs: { value: "CC" } }, [
+                              _vm._v("CC")
                             ])
                           ]
                         )

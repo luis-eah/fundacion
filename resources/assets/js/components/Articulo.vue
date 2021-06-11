@@ -44,7 +44,7 @@
                             </thead>
                             <tbody>
                                 <tr v-for="articulo in arrayArticulo" :key="articulo.id">
-                                    <td width="10%" >
+                                    <td width="12%" >
                                         <button type="button" @click="abrirModal('articulo','actualizar',articulo)" class="btn btn-warning btn-sm">
                                           <i class="icon-pencil"></i>
                                         </button> &nbsp;
@@ -110,7 +110,7 @@
                             </button>
                         </div>
                         <div class="modal-body">
-                            <form action="" method="post" enctype="multipart/form-data" class="form-horizontal">
+                            <form id="formArticulo" action="" method="post" enctype="multipart/form-data" class="form-horizontal">
                                 <div class="form-group row">
                                     <label class="col-md-3 form-control-label" for="text-input">Categoría</label>
                                     <div class="col-md-9">
@@ -309,6 +309,7 @@
                     }
                 }
                 ).then(function (response) {
+                    document.getElementById("formArticulo").reset();
                     me.cerrarModal();
                     me.listarArticulo(1,'','nombre');
                 }).catch(function (error) {
@@ -342,6 +343,8 @@
                     }
                 }
                 ).then(function (response) {
+                    document.getElementById("formArticulo").reset();
+
                     me.cerrarModal();
                     me.listarArticulo(1,'','nombre');
                 }).catch(function (error) {
