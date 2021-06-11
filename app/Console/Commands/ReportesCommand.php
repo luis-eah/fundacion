@@ -41,7 +41,7 @@ class ReportesCommand extends Command
      */
     public function handle()
     {
-        // $this->listarPdf();
+        $this->listarPdf();
         $disk = "s3";
         $ventas = venta::all();
 
