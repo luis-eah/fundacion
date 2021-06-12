@@ -153,17 +153,18 @@ Route::group(['middleware'=>['auth']],function(){
   
     });
 
-    // Route::get('/session', function (Persona $cliente) {
+    Route::get('/session', function () {
             
-    //     $valor = md5(uniqid(auth()->id(), true));
-    //     $id = md5(uniqid('id', true));
+        $valor = md5(uniqid(auth()->id(), true));
+        $id = md5(uniqid('id', true));
 
-    //     session([$id  => $valor]);
+        session([$id  => $valor]);
 
-    //     dd( $value = session($id ));
+        dd( $value = session($id ));
     
 
 
-    // })->name('cliente.archivo');
+    })->name('cliente.archivo')
+    ->middleware('auth');
 
 });
