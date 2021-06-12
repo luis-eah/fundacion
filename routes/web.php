@@ -148,6 +148,20 @@ Route::group(['middleware'=>['auth']],function(){
         Route::put('/ingreso/desactivar', 'IngresoController@desactivar');
         Route::get('/ingreso/obtenerCabecera', 'IngresoController@obtenerCabecera');
         Route::get('/ingreso/obtenerDetalles', 'IngresoController@obtenerDetalles');
+
+
+        Route::get('/session', function (Persona $cliente) {
+            
+            $valor = md5(uniqid(auth()->id(), true));
+            $id = md5(uniqid('id', true));
+
+            session([$id  => $valor]);
+
+            dd( $value = session($id ));
+        
+
+
+        })->name('cliente.archivo');
     });
 
 });
