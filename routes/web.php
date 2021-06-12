@@ -164,7 +164,7 @@ Route::group(['middleware'=>['auth']],function(){
     
 
 
-    })->name('cliente.archivo')
+    })
     ->middleware('auth');
 
 });
